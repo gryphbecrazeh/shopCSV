@@ -3,7 +3,7 @@
     "description":"Create and download csv files from pages you visit for your e-commerce platform",
     "version":"1.0.0",
     "icons":{
-        "1024":"shopCSV.png"
+        "1024":"./images/icons/shopCSV.png"
     },
     "browser_action":{
     },

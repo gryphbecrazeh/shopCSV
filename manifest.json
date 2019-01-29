@@ -17,7 +17,7 @@
         }
     ],
     "permissions":[
-        "activeTab","tabs"
+        "tabs"
     ],
     "manifest_version":2
 }

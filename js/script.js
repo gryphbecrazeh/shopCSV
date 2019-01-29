@@ -3,4 +3,9 @@ function addCart(){
 
 }
 addButton.addEventListener("click",addCart);
-chrome.runtime.onMessage.addListener()
+
+chrome.runtime.onMessage.addListener(
+    function(request,sender,sendResponse){
+        alert(request.message);
+    }
+);

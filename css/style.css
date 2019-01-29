@@ -1,0 +1,14 @@
+body{
+    margin: 1em;
+    padding: 0;
+    text-align: center;
+    display: grid;
+    background-color: #4286f4;
+    color: white;
+}
+h1{
+    font-family: 'Pacifico', cursive;
+}
+p{
+    font-family: 'Roboto', sans-serif;
+}

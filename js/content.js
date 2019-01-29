@@ -12,4 +12,10 @@ let message = {
     message:"test"
 }
 // Sends a message, will later send the object containing all of the fields for the csv
-chrome.tabs.sendmessage(tab.id, message);
+// chrome.tabs.sendmessage(tab.id, message);
+
+
+// this isn't working, I am attempting to send a request from the popup when I click add to cart, then the content script will scan the page, and return the csv
+chrome.tabs.onMessage.addListener((()=>{
+    console.log(message);
+})());

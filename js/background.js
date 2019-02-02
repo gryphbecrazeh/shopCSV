@@ -1,4 +1,4 @@
-const x = {message:""};
+const x = {message:{}};
 chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
     if(request.target=="background"&&request.source=="content"){
         x.message = request.message;

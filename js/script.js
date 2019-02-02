@@ -1,11 +1,10 @@
-var activeItem={};
 let addButton = document.getElementById("add");
 let gotoCheckout = document.getElementById("gotoCheckout");
 let checkout = document.getElementById("checkout");
 chrome.runtime.onMessage.addListener(receiveMessage);
-function receiveMessage (message, sender, sendResponse){
-    if(message.target=="popup"){
-        activeItem=message;
+function receiveMessage (request, sender, sendResponse){
+    if(request.target=="popup"){
+        console.log(request);
     }
 }
 

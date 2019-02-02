@@ -9,11 +9,13 @@ function receiveMessage (message, sender, sendResponse){
     // window.x might still work as a global variable, I"m not certain as I jad just relized this
     // old method for receiving messages from popup script might have worked
     // it appears I forgot to semi-colon a line, which mighthave been the cause of receiving messages not working
-    x=message;
-    console.log(x);
+    if(message.target=="popup"){
+        x=message;
+        console.log(x);
+    }
 }
-console.log(x);
 addButton.addEventListener("click",addCart);
 function addCart(){
+    chrome.runtime.sendMessage({target:"background",test:"Test",source:"popup"});
     addButton.innerHTML="Added";
 }

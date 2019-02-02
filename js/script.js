@@ -1,21 +1,24 @@
-var x={};
+var activeItem={};
 let addButton = document.getElementById("add");
+let gotoCheckout = document.getElementById("gotoCheckout");
+let checkout = document.getElementById("checkout");
 chrome.runtime.onMessage.addListener(receiveMessage);
 function receiveMessage (message, sender, sendResponse){
-    // in order for this to work, you must have already had the extension inspected for
-    //  it to count it, the popup needs to be open when you refresh the page, this currently
-    //  only works when you have the popup html inspected as it forces the popup to stay open, 
-    // need to set up a script to send request from script.js to content.js
-    // window.x might still work as a global variable, I"m not certain as I jad just relized this
-    // old method for receiving messages from popup script might have worked
-    // it appears I forgot to semi-colon a line, which mighthave been the cause of receiving messages not working
     if(message.target=="popup"){
-        x=message;
-        console.log(x);
+        activeItem=message;
     }
 }
+
 addButton.addEventListener("click",addCart);
 function addCart(){
     chrome.runtime.sendMessage({target:"background",test:"Test",source:"popup"});
     addButton.innerHTML="Added";
+}
+gotoCheckout.addEventListener("click",goto_check_out);
+function goto_check_out (){
+    chrome.tabs.create({url:'../html/background.html'});
+}
+checkout.addEventListener("click",check_out);
+function check_out (){
+    alert("Thank you!");
 }

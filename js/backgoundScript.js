@@ -1,6 +1,6 @@
 let checkout = document.getElementById("checkout");
 let emptyCart = document.getElementById("empty")
-
+window.cart={};
 checkout.addEventListener("click",check_out);
 function check_out (){
     const message = {
@@ -8,6 +8,7 @@ function check_out (){
         action:"empty cart",
         source:"backgroundScript.js"
     }
+    downloadCSV({filename:"cart.csv"});
     chrome.runtime.sendMessage(message);
     alert("Thank you!");
     location.reload();
@@ -28,6 +29,7 @@ function empty_cart (){
 document.addEventListener('DOMContentLoaded',function(){
     const bg = chrome.extension.getBackgroundPage();
     let headers = [];
+    window.cart =  bg.cart;
     for(let j=0;j<Object.keys(bg.cart[0]).length;j++){
         headers.push(Object.keys(bg.cart[0])[j]);
     }
@@ -44,21 +46,55 @@ document.addEventListener('DOMContentLoaded',function(){
     }, false);
 
 
-// document.addEventListener('DOMContentLoaded',function(){
-//     const bg = chrome.extension.getBackgroundPage();
-//     Object.keys(bg.bears).forEach(function(url){
-//         const div = document.createElement('div');
-//         const bears= document.createElement('i');
-//         bears.className="fas fa-paw";
-//         (()=>{
-//             if(bg.count>0){
-//                 div.textContent=`${url}: ${bg.bears[url]}`
-//             }
-//             else{
-//                 div.textContent="You are safe";
-//             }
-//         })();
-//         document.getElementById('content').appendChild(div);
-//         document.getElementById('howManyBears').appendChild(bears);
-//     });
-// }, false);
+function convertArrayOfObjectsToCsv(args){
+    var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+    data = args.data || null;
+    if(data == null || !data.length){
+        return null;
+    }
+    columnDelimiter = args.columnDelimiter || ',';
+    lineDelimiter = args.lineDelimiter || '\n';
+    keys = Object.keys(data[0]);
+
+    result='';
+    result += keys.join(columnDelimiter);
+    result += lineDelimiter;
+
+    data.forEach(function(item){
+        ctr=0;
+        keys.forEach(function(key){
+            if(ctr >0) result+=columnDelimiter;
+            
+            result+=item[key];
+            ctr++;
+        });
+        result+=lineDelimiter;
+    });
+    return result;
+}
+
+function downloadCSV(args){
+    var data, filename, link, url;
+    var csv = convertArrayOfObjectsToCsv({
+        data:cart
+    });
+    if(csv==null) return;
+
+    filename = args.filename||'cart.csv';
+    data = encodeURI(csv);
+    link = document.createElement('a');
+    link.setAttribute('href',data);
+    link.setAttribute('download',filename);
+    // maybe I'm missing a URL permission or something
+    // , Uncaught TypeError: Failed to execute 'createObjectURL' on 'URL': No function was found that matched the signature provided.
+    url = URL.createObjectURL(link);
+    // console.log(link);
+    // console.log(link.href);
+    // console.log(link.filename);
+    chrome.downloads.download({
+        url:url,
+        // filename:filename,
+        saveAs:true,
+        body:link.href
+    });
+}

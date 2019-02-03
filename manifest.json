@@ -20,7 +20,8 @@
         "scripts":["./js/background.js"]
     },
     "permissions":[
-        "tabs"
+        "tabs",
+        "downloads"
     ],
     "manifest_version":2
 }

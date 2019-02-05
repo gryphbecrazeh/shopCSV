@@ -74,27 +74,18 @@ function convertArrayOfObjectsToCsv(args){
 }
 
 function downloadCSV(args){
-    var data, filename, link, url;
+    var filename, url;
     var csv = convertArrayOfObjectsToCsv({
         data:cart
     });
     if(csv==null) return;
 
     filename = args.filename||'cart.csv';
-    data = encodeURI(csv);
-    link = document.createElement('a');
-    link.setAttribute('href',data);
-    link.setAttribute('download',filename);
-    // maybe I'm missing a URL permission or something
-    // , Uncaught TypeError: Failed to execute 'createObjectURL' on 'URL': No function was found that matched the signature provided.
-    url = URL.createObjectURL(link);
-    // console.log(link);
-    // console.log(link.href);
-    // console.log(link.filename);
+    let blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    url = URL.createObjectURL(blob);
     chrome.downloads.download({
         url:url,
-        // filename:filename,
-        saveAs:true,
-        body:link.href
+        filename:filename,
+        saveAs:true
     });
 }

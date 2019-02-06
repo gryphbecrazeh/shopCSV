@@ -1,6 +1,8 @@
 let checkout = document.getElementById("checkout");
 let emptyCart = document.getElementById("empty")
+// initializes cart to empty object
 window.cart={};
+
 checkout.addEventListener("click",check_out);
 function check_out (){
     const message = {
@@ -8,11 +10,14 @@ function check_out (){
         action:"empty cart",
         source:"backgroundScript.js"
     }
+    // designates the file name to the cart object
     downloadCSV({filename:"cart.csv"});
+    // sends message to the background script to empty the cart
     chrome.runtime.sendMessage(message);
     alert("Thank you!");
     location.reload();
 }
+
 emptyCart.addEventListener("click",empty_cart);
 function empty_cart (){
     const message = {
@@ -28,6 +33,7 @@ document.addEventListener('DOMContentLoaded',function(){
     const bg = chrome.extension.getBackgroundPage();
     let headers = [];
     window.cart =  bg.cart;
+        // re-initializes the cart variable??
     if(window.cart){
         for(let j=0;j<Object.keys(bg.cart[0]).length;j++){
             headers.push(Object.keys(bg.cart[0])[j]);

@@ -24,27 +24,49 @@ function empty_cart (){
     alert("Cart Emptied!");
     location.reload();
 }
-
-
 document.addEventListener('DOMContentLoaded',function(){
     const bg = chrome.extension.getBackgroundPage();
     let headers = [];
     window.cart =  bg.cart;
-    for(let j=0;j<Object.keys(bg.cart[0]).length;j++){
-        headers.push(Object.keys(bg.cart[0])[j]);
-    }
-    const div = document.createElement('div');
-    for(let k = 0;k<headers.length;k++){
-        div.textContent+=` ${headers[k]}`;
-    }
-    document.getElementById('content').appendChild(div);
-    for(let i=0;i<bg.cart.length;i++){
+    if(window.cart){
+        for(let j=0;j<Object.keys(bg.cart[0]).length;j++){
+            headers.push(Object.keys(bg.cart[0])[j]);
+        }
         const div = document.createElement('div');
-        div.textContent=`${bg.cart[i].width}, ${bg.cart[i].length}, ${bg.cart[i].height}, ${bg.cart[i].depth}`;
+        for(let k = 0;k<headers.length;k++){
+            div.textContent+=` ${headers[k]}`;
+        }
         document.getElementById('content').appendChild(div);
-        };    
-    }, false);
+        for(let i=0;i<bg.cart.length;i++){
+            const div = document.createElement('div');
+            const deleteButton = document.createElement('button');
+            // generates a unique productID, also allows functionality to remove specific elements
+            div.id=`product${i}`;
+            deleteButton.className="deleteButton";
+            deleteButton.id=`deleteButton${i}`;
 
+            // lists out all of the elements of the object, currently not optomized for scalability with more options
+            // need to generate the headers earlier on in the script and use that array to parse though the objects to
+            // render all of the elements of the object
+            div.textContent=`${bg.cart[i].width}, ${bg.cart[i].length}, ${bg.cart[i].height}, ${bg.cart[i].depth}`;
+            // creates remove from cart button
+            deleteButton.textContent="Remove from Cart";
+            // creates event listener for item at it's array index
+            deleteButton.addEventListener("click",function(){
+                deleteItem(i);
+            },false);
+            function deleteItem (arrayIndex){
+                // Removes item from cart
+                cart.splice(arrayIndex,1);
+                // refreshes the background page to show latest update to cart
+                location.reload();
+            }            
+            // Creates renders the objects, later to be replaced with html tables
+            document.getElementById('content').appendChild(div);
+            document.getElementById(div.id).appendChild(deleteButton);
+            };
+    }
+}, false);
 
 function convertArrayOfObjectsToCsv(args){
     var result, ctr, keys, columnDelimiter, lineDelimiter, data;

@@ -1,8 +1,5 @@
 let checkout = document.getElementById("checkout");
 let emptyCart = document.getElementById("empty")
-// initializes cart to empty object
-window.cart={};
-
 checkout.addEventListener("click",check_out);
 function check_out (){
     const message = {
@@ -32,17 +29,23 @@ function empty_cart (){
 document.addEventListener('DOMContentLoaded',function(){
     const bg = chrome.extension.getBackgroundPage();
     let headers = [];
+    // re-initializes the cart variable??
     window.cart =  bg.cart;
-        // re-initializes the cart variable??
-    if(window.cart){
-        for(let j=0;j<Object.keys(bg.cart[0]).length;j++){
+    if(window.cart.length>0){
+        // create headers
+        for(let j=0;j<Object.keys(window.cart[0]).length;j++){
             headers.push(Object.keys(bg.cart[0])[j]);
         }
+        // begin render cart
         const div = document.createElement('div');
+        // render headers
+        // maybe switch for forEach
         for(let k = 0;k<headers.length;k++){
             div.textContent+=` ${headers[k]}`;
         }
+        // append headers
         document.getElementById('content').appendChild(div);
+        // begin render item values
         for(let i=0;i<bg.cart.length;i++){
             const div = document.createElement('div');
             const deleteButton = document.createElement('button');
@@ -54,7 +57,17 @@ document.addEventListener('DOMContentLoaded',function(){
             // lists out all of the elements of the object, currently not optomized for scalability with more options
             // need to generate the headers earlier on in the script and use that array to parse though the objects to
             // render all of the elements of the object
-            div.textContent=`${bg.cart[i].width}, ${bg.cart[i].length}, ${bg.cart[i].height}, ${bg.cart[i].depth}`;
+            let itemContent = ``;
+            for(let k=0;k<headers.length;k++){
+                console.log(headers[k]);
+                console.log(bg.cart[i]);
+                let itemHeader = headers[k];
+                console.log(itemHeader);
+                let itemArray = bg.cart[i];
+                itemContent+=`${itemArray[itemHeader]}, `;
+            }
+            div.textContent=itemContent;
+            // div.textContent=`${bg.cart[i].width}, ${bg.cart[i].length}, ${bg.cart[i].height}, ${bg.cart[i].depth}`;
             // creates remove from cart button
             deleteButton.textContent="Remove from Cart";
             // creates event listener for item at it's array index

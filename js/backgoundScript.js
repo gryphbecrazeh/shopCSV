@@ -1,5 +1,8 @@
 let checkout = document.getElementById("checkout");
 let emptyCart = document.getElementById("empty")
+
+
+
 checkout.addEventListener("click",check_out);
 function check_out (){
     const message = {
@@ -26,6 +29,8 @@ function empty_cart (){
     alert("Cart Emptied!");
     location.reload();
 }
+
+
 document.addEventListener('DOMContentLoaded',function(){
     const bg = chrome.extension.getBackgroundPage();
     let headers = [];
@@ -54,8 +59,7 @@ document.addEventListener('DOMContentLoaded',function(){
             deleteButton.className="deleteButton";
             deleteButton.id=`deleteButton${i}`;
 
-            // lists out all of the elements of the object, currently not optomized for scalability with more options
-            // need to generate the headers earlier on in the script and use that array to parse though the objects to
+            // lists out all of the elements of the object
             // render all of the elements of the object
             let itemContent = ``;
             for(let k=0;k<headers.length;k++){
@@ -77,6 +81,15 @@ document.addEventListener('DOMContentLoaded',function(){
             function deleteItem (arrayIndex){
                 // Removes item from cart
                 cart.splice(arrayIndex,1);
+                const message = {
+                    target:"background",
+                    action:"remove item",
+                    index:arrayIndex,
+                    range:1,
+                    source:"backgroundScript.js"
+                }
+                // tells the background script to remove this specific item from the background cart
+                chrome.runtime.sendMessage(message);
                 // refreshes the background page to show latest update to cart
                 location.reload();
             }            
@@ -89,12 +102,14 @@ document.addEventListener('DOMContentLoaded',function(){
 
 function convertArrayOfObjectsToCsv(args){
     var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+    // alternative values to use when exporting csv
     data = args.data || null;
     if(data == null || !data.length){
         return null;
     }
     columnDelimiter = args.columnDelimiter || ',';
     lineDelimiter = args.lineDelimiter || '\n';
+    // defines the object headers, can probable pull from the existing header array from above
     keys = Object.keys(data[0]);
 
     result='';
@@ -104,8 +119,8 @@ function convertArrayOfObjectsToCsv(args){
     data.forEach(function(item){
         ctr=0;
         keys.forEach(function(key){
-            if(ctr >0) result+=columnDelimiter;
-            
+            // inserts a comma after each item
+            if(ctr >0) result+=columnDelimiter;            
             result+=item[key];
             ctr++;
         });

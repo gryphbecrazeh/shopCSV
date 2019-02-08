@@ -9,7 +9,7 @@ function receiveMessage (request, sender, sendResponse){
 
 addButton.addEventListener("click",addCart);
 function addCart(){
-    chrome.runtime.sendMessage({target:"background",test:"Test",source:"popup"});
+    chrome.runtime.sendMessage({target:"background",action:"add",source:"popup"});
     addButton.innerHTML="Added";
 }
 gotoCheckout.addEventListener("click",goto_check_out);

@@ -8,6 +8,7 @@ window.onload=()=>{
     let message = {
         target:"background",
         message:csv,
+        action:"store",
         source:"content"
     }
     chrome.runtime.sendMessage(message);   

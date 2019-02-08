@@ -6,7 +6,6 @@ function receiveMessage (request, sender, sendResponse){
         console.log(request);
     }
 }
-
 addButton.addEventListener("click",addCart);
 function addCart(){
     chrome.runtime.sendMessage({target:"background",action:"add",source:"popup"});

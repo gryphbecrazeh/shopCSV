@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded',function(){
                 itemContent+=`${itemArray[itemHeader]}, `;
             }
             div.textContent=itemContent;
-            // div.textContent=`${bg.cart[i].width}, ${bg.cart[i].length}, ${bg.cart[i].height}, ${bg.cart[i].depth}`;
             // creates remove from cart button
             deleteButton.textContent="Remove from Cart";
             // creates event listener for item at it's array index

@@ -12,3 +12,8 @@ h1{
 p{
     font-family: 'Roboto', sans-serif;
 }
+#gotoOptions {
+    position: absolute;
+    top:1em;
+    right:1em;
+}

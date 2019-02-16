@@ -31,73 +31,82 @@ function empty_cart (){
 }
 
 
-document.addEventListener('DOMContentLoaded',function(){
-    const bg = chrome.extension.getBackgroundPage();
-    let headers = [];
-    // re-initializes the cart variable??
-    window.cart =  bg.cart;
-    if(window.cart.length>0){
-        // create headers
-        for(let j=0;j<Object.keys(window.cart[0]).length;j++){
-            headers.push(Object.keys(bg.cart[0])[j]);
-        }
-        // begin render cart
-        const div = document.createElement('div');
-        // render headers
-        // maybe switch for forEach
-        for(let k = 0;k<headers.length;k++){
-            div.textContent+=` ${headers[k]}`;
-        }
-        // append headers
-        document.getElementById('content').appendChild(div);
-        // begin render item values
-        for(let i=0;i<bg.cart.length;i++){
-            const div = document.createElement('div');
-            const deleteButton = document.createElement('button');
-            // generates a unique productID, also allows functionality to remove specific elements
-            div.id=`product${i}`;
-            deleteButton.className="deleteButton";
-            deleteButton.id=`deleteButton${i}`;
 
-            // lists out all of the elements of the object
-            // render all of the elements of the object
-            let itemContent = ``;
-            for(let k=0;k<headers.length;k++){
-                console.log(headers[k]);
-                console.log(bg.cart[i]);
-                let itemHeader = headers[k];
-                console.log(itemHeader);
-                let itemArray = bg.cart[i];
-                itemContent+=`${itemArray[itemHeader]}, `;
-            }
-            div.textContent=itemContent;
-            // creates remove from cart button
-            deleteButton.textContent="Remove from Cart";
-            // creates event listener for item at it's array index
-            deleteButton.addEventListener("click",function(){
-                deleteItem(i);
-            },false);
-            function deleteItem (arrayIndex){
-                // Removes item from cart
-                cart.splice(arrayIndex,1);
-                const message = {
-                    target:"background",
-                    action:"remove item",
-                    index:arrayIndex,
-                    range:1,
-                    source:"backgroundScript.js"
-                }
-                // tells the background script to remove this specific item from the background cart
-                chrome.runtime.sendMessage(message);
-                // refreshes the background page to show latest update to cart
-                location.reload();
-            }            
-            // Creates renders the objects, later to be replaced with html tables
-            document.getElementById('content').appendChild(div);
-            document.getElementById(div.id).appendChild(deleteButton);
-            };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded',(()=>{
+    let elementTable = document.getElementById("cartTable");
+    const bg = chrome.extension.getBackgroundPage();
+    let headerRow = elementTable.insertRow(0);
+    headerRow.cell={};
+    for(key in bg.table.headers()){
+        activeKey=bg.table.headers()[key];
+        headerRow.cell[key]=headerRow.insertCell(key);
+        headerRow.cell[key].innerHTML=`${activeKey}`;
     }
-}, false);
+    for(let i=0;i<bg.table.obj.length;i++){
+        let row = elementTable.insertRow(i+1);
+        row.cell={};
+        for(key in bg.table.headers()){
+            activeKey=bg.table.headers()[key];
+            activeObject=bg.table.obj;
+            row.cell[key]=row.insertCell(key);
+            row.cell[key].innerHTML=`${activeObject[i][activeKey]}`;
+        }
+    }
+})());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function convertArrayOfObjectsToCsv(args){
     var result, ctr, keys, columnDelimiter, lineDelimiter, data;

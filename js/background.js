@@ -1,6 +1,18 @@
 window.viewedObject = {};
 window.cart = [];
 
+function Table(){
+    this.obj=window.cart}
+Table.prototype.headers= (function(){
+    let headers=[];
+    for(key in this.obj[0]){
+        let i=0;
+        headers.push(key);
+    }
+    return headers;
+});
+window.table= new Table();
+
 chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
    const actions = {view:viewItem,remove:removeItem,append:appendItem,range:request.range||window.cart.length||0,index:request.index||0};
     function viewItem(){

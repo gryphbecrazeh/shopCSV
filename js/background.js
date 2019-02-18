@@ -1,6 +1,6 @@
 window.viewedObject = {};
 window.cart = [];
-
+window.index=0;
 function Table(){
     this.obj=window.cart}
 Table.prototype.headers= (function(){
@@ -18,8 +18,10 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
     function viewItem(){
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
             let url = tabs[0].url;
-            request.url = url;
-        });        
+            request.message.url = url;
+        });
+        request.message.delete = `<button class="remove" id="${window.index}">Remove</button>`;
+        request.message.id=window.index++;
         window.viewedObject = request.message;
     }
     function removeItem (){

@@ -1,7 +1,6 @@
 let checkout = document.getElementById("checkout");
-let emptyCart = document.getElementById("empty")
-
-
+let emptyCart = document.getElementById("empty");
+window.deleteItem = [];
 
 checkout.addEventListener("click",check_out);
 function check_out (){
@@ -18,6 +17,17 @@ function check_out (){
     location.reload();
 }
 
+deleteItem.addEventListener("click",remove_item(deleteItem.id));
+function remove_item (id){
+    const message = {
+        target:"background",
+        action:"remove item",
+        index:id,
+        source:"backgroundScript.js"
+    }
+    chrome.runtime.sendMessage(message);
+    location.reload();
+}
 emptyCart.addEventListener("click",empty_cart);
 function empty_cart (){
     const message = {
@@ -26,38 +36,8 @@ function empty_cart (){
         source:"backgroundScript.js"
     }
     chrome.runtime.sendMessage(message);
-    alert("Cart Emptied!");
     location.reload();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded',(()=>{
     let elementTable = document.getElementById("cartTable");
     const bg = chrome.extension.getBackgroundPage();
@@ -65,8 +45,10 @@ document.addEventListener('DOMContentLoaded',(()=>{
     headerRow.cell={};
     for(key in bg.table.headers()){
         activeKey=bg.table.headers()[key];
-        headerRow.cell[key]=headerRow.insertCell(key);
-        headerRow.cell[key].innerHTML=`${activeKey}`;
+        if(activeKey!="id"&&activeKey!="url"){
+            headerRow.cell[key]=headerRow.insertCell(key);
+            headerRow.cell[key].innerHTML=`${activeKey}`;
+        }
     }
     for(let i=0;i<bg.table.obj.length;i++){
         let row = elementTable.insertRow(i+1);
@@ -74,8 +56,17 @@ document.addEventListener('DOMContentLoaded',(()=>{
         for(key in bg.table.headers()){
             activeKey=bg.table.headers()[key];
             activeObject=bg.table.obj;
-            row.cell[key]=row.insertCell(key);
-            row.cell[key].innerHTML=`${activeObject[i][activeKey]}`;
+            if(activeKey!="id"&&activeKey!="url"){
+                row.cell[key]=row.insertCell(key);
+                if(activeKey!="delete"){
+                    row.cell[key].innerHTML=`<input type="text" placeholder="${activeObject[i][activeKey]}">`;
+                }
+                else{
+                    row.cell[key].innerHTML=`${activeObject[i][activeKey]}`;
+                    // pushes the html object to an array, which will be referenced in the onclick event which will plug in the index of the item to be removed
+                    window.deleteItem.push(document.getElementById(`remove${activeObject[i].id}`));
+                }
+            }
         }
     }
 })());
